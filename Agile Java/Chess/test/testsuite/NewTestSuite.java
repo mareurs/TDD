@@ -3,12 +3,12 @@ package testsuite;
 import chess.ChessBoardTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import pieces.PawnTest;
+import pieces.PieceIT;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
     ChessBoardTest.class, 
-    PawnTest.class
+    PieceIT.class
 })
 public class NewTestSuite {    
 }

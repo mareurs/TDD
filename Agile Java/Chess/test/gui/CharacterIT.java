@@ -2,7 +2,7 @@ package gui;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
-import pieces.Pawn;
+import pieces.Piece;
 
 public class CharacterIT {
 
@@ -21,11 +21,11 @@ public class CharacterIT {
 
     @Test
     public void testSetCharacter() {
-        Pawn blackPawn = new Pawn(Pawn.BLACK);
-        Pawn whitePawn = new Pawn(Pawn.WHITE);
+        Piece blackPawn = Piece.make(Piece.PAWN, Piece.BLACK);
+        Piece whitePawn = Piece.make(Piece.PAWN, Piece.WHITE);
 
-        assertEquals((Character) 'P', blackPawn.getName());
-        assertEquals((Character) 'p', whitePawn.getName());
+        assertEquals("P", blackPawn.getShortName());
+        assertEquals("p", whitePawn.getShortName());
 
     }
 

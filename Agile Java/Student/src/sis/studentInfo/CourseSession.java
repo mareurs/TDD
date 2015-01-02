@@ -7,30 +7,49 @@ import java.util.GregorianCalendar;
 import java.util.List;
 
 public class CourseSession {
-    private static final short COURSE_LENGTH_WEEKS = 16;
 
+    private static final short COURSE_LENGTH_WEEKS = 16;
+    private static int count;
     private final String department;
     private final int number;
     private final List<Student> students = new ArrayList<>();
     private final Date startDate;
+    private int credits;
 
-    public CourseSession(String department, int number, Date startDate) {
+    static public CourseSession create(String department, int number, Date startDate) {
+        incrementCount();
+        return new CourseSession(department, number, startDate);
+    }
+
+    static void resetCount() {
+        CourseSession.count = 0;
+    }
+
+    static int getCount() {
+        return CourseSession.count;
+    }
+
+    private CourseSession(String department, int number, Date startDate) {
         this.department = department;
         this.number = number;
-        this.startDate = startDate;
+        this.startDate = (Date) startDate.clone();
+    }
+
+    static private void incrementCount() {
+        CourseSession.count++;
     }
 
     public int getNumber() {
         return this.number;
     }
 
-    public String getDepartment()
-    {
+    public String getDepartment() {
         return this.department;
     }
 
     public void enroll(Student student) {
         students.add(student);
+        student.addCredit(credits);
     }
 
     public int size() {
@@ -50,13 +69,15 @@ public class CourseSession {
     }
 
     public Date getStartDate() {
-        return startDate;
+        return (Date) startDate.clone();
     }
-    
-    public List<Student> getAllStudents()
-    {
+
+    public List<Student> getAllStudents() {
         return students;
     }
-    
-}
 
+    void setNumberOfCredits(int credits) {
+        this.credits = credits;
+    }
+
+}

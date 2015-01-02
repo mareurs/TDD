@@ -6,6 +6,9 @@ import java.util.GregorianCalendar;
 
 public class DateUtil {
 
+    private DateUtil() {
+    }
+
     static public Date createDate(int year, int month, int date) {
         GregorianCalendar calendar = new GregorianCalendar();
         calendar.clear();
@@ -15,4 +18,3 @@ public class DateUtil {
         return calendar.getTime();
     }
 }
-
