@@ -6,17 +6,17 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class CourseSession {
+public class CourseSession implements Comparable<CourseSession> {
 
     private static final short COURSE_LENGTH_WEEKS = 16;
     private static int count;
     private final String department;
-    private final int number;
+    private final String number;
     private final List<Student> students = new ArrayList<>();
     private final Date startDate;
     private int credits;
 
-    static public CourseSession create(String department, int number, Date startDate) {
+    static public CourseSession create(String department, String number, Date startDate) {
         incrementCount();
         return new CourseSession(department, number, startDate);
     }
@@ -29,7 +29,7 @@ public class CourseSession {
         return CourseSession.count;
     }
 
-    private CourseSession(String department, int number, Date startDate) {
+    private CourseSession(String department, String number, Date startDate) {
         this.department = department;
         this.number = number;
         this.startDate = (Date) startDate.clone();
@@ -39,7 +39,7 @@ public class CourseSession {
         CourseSession.count++;
     }
 
-    public int getNumber() {
+    public String getNumber() {
         return this.number;
     }
 
@@ -78,6 +78,15 @@ public class CourseSession {
 
     void setNumberOfCredits(int credits) {
         this.credits = credits;
+    }
+
+    @Override
+    public int compareTo(CourseSession o) {
+        int compareDepartments = department.compareTo(o.department);
+        if (compareDepartments != 0)
+            return compareDepartments;
+
+        return number.compareTo(o.number);
     }
 
 }

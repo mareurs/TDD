@@ -13,7 +13,7 @@ public class RosterReporterIT {
 
     @Test
     public void testCreate() {
-        CourseSession session = CourseSession.create("ENG", 101, new Date());
+        CourseSession session = CourseSession.create("ENG", "101", new Date());
         RosterReporter report = new RosterReporter(session);
         session.enroll(new Student("A"));
         session.enroll(new Student("B"));

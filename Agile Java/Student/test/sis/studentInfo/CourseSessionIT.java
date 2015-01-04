@@ -2,6 +2,7 @@ package sis.studentInfo;
 
 import java.util.Date;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +25,7 @@ public class CourseSessionIT {
     @Test
     public void testCreate() {
         assertEquals("ENGL", session.getDepartment());
-        assertEquals(101, session.getNumber());
+        assertEquals("101", session.getNumber());
         assertEquals(0, session.size());
         assertEquals(startDate, session.getStartDate());
     }
@@ -60,11 +61,21 @@ public class CourseSessionIT {
         assertEquals(2, CourseSession.getCount());
     }
 
+    public void testComparable() {
+        final Date date = new Date();
+        CourseSession sessionA = CourseSession.create("CMSC", "101", date);
+        CourseSession sessionB = CourseSession.create("ENGL", "101", date);
+        assertTrue(sessionA.compareTo(sessionB) < 0);
+        assertTrue(sessionB.compareTo(sessionA) > 0);
+        CourseSession sessionC = CourseSession.create("CMSC", "101", date);
+        assertEquals(0, sessionA.compareTo(sessionC));
+    }
+
     /*
      Privates
      */
     private CourseSession createCourseSession() {
-        CourseSession result = CourseSession.create("ENGL", 101, startDate);
+        CourseSession result = CourseSession.create("ENGL", "101", startDate);
         result.setNumberOfCredits(CourseSessionIT.CREDITS);
         return result;
     }

@@ -21,11 +21,11 @@ public class CharacterIT {
 
     @Test
     public void testSetCharacter() {
-        Piece blackPawn = Piece.make(Piece.PAWN, Piece.BLACK);
-        Piece whitePawn = Piece.make(Piece.PAWN, Piece.WHITE);
+        Piece blackPawn = Piece.createBlack(Piece.Type.PAWN);
+        Piece whitePawn = Piece.createWhite(Piece.Type.PAWN);
 
-        assertEquals("P", blackPawn.getShortName());
-        assertEquals("p", whitePawn.getShortName());
+        assertEquals('P', blackPawn.getRepresentation());
+        assertEquals('p', whitePawn.getRepresentation());
 
     }
 
