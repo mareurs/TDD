@@ -1,31 +1,27 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import pieces.Piece;
+import java.util.*;
+import pieces.*;
+import pieces.Piece.COLOR;
 import util.StringUtil;
 
 /**
  *
  * A board of pawns
  */
-class ChessBoard {
+public class Board {
 
-    static private final int PIECES_PER_RANK = 8;
-    static private final int RANKS_PER_BOARD = 8;
+    static final int PIECES_PER_RANK = 8;
+    static final int RANKS_PER_BOARD = 8;
 
     private int piecesCount;
     private final List<List<Piece>> table = new ArrayList<>(RANKS_PER_BOARD);
-    private final List<Piece> whitePieces = new ArrayList<>();
-    private final List<Piece> blackPieces = new ArrayList<>();
 
-    ChessBoard() {
+    Board() {
         addEmptyRanks();
     }
 
-    ChessBoard(String inputBoard) {
-
+    Board(String inputBoard) {
         String processedInput = processInputBoard(inputBoard);
 
         String[] ranks = processedInput.split("\n");
@@ -36,6 +32,27 @@ class ChessBoard {
                 rank.add(Piece.createPieceByRepresentation(p));
             table.add(rank);
         }
+    }
+
+    static public int getRankFromPosition(String position) {
+        for (char value : position.toCharArray())
+            if (Character.isDigit(value))
+                return Integer.parseInt("" + value) - 1;
+
+        throw new InvalidPositionException();
+    }
+
+    static public int getFileFromPosition(String position) {
+        for (char value : position.toCharArray())
+            if (Character.isLetter(value))
+                return charFileToInt(value);
+
+        throw new InvalidPositionException();
+    }
+
+    static public String positionToString(int rank, int file) {
+        String fileString = String.valueOf((char) ('a' + file));
+        return fileString + String.valueOf(rank + 1);
     }
 
     public void initialize() {
@@ -73,9 +90,9 @@ class ChessBoard {
         return result.toString();
     }
 
-    void add(Piece piece, String position) {
-        int rankNumber = parseRankNumber(position);
-        int fileNumber = parseFileNumber(position);
+    void put(Piece piece, String position) {
+        int rankNumber = getRankFromPosition(position);
+        int fileNumber = getFileFromPosition(position);
         table.get(rankNumber).set(fileNumber, piece);
     }
 
@@ -84,13 +101,13 @@ class ChessBoard {
         for (int i = 0; i < RANKS_PER_BOARD; i++) {
             List<Piece> rank = table.get(i);
             for (int j = 0; j < PIECES_PER_RANK; j++)
-                if (rank.get(j).getRepresentation() == (representation))
+                if (rank.get(j).getRepresentation() == representation)
                     count++;
         }
         return count;
     }
 
-    char getPieceAt(String position) {
+    Piece getPieceAt(String position) {
         int rankNumber = -1;
         int fileNumber = -1;
         for (char value : position.toCharArray()) {
@@ -100,50 +117,17 @@ class ChessBoard {
                 fileNumber = charFileToInt(value);
             }
         }
-        return table.get(rankNumber).get(fileNumber).getRepresentation();
+        return table.get(rankNumber).get(fileNumber);
     }
 
-    double countWhitesPoints() {
-        double total = 0;
-        setPointsForAllPieces();
-        updatePieceColections();
-
-        for (Piece piece : whitePieces)
-            total += piece.getPoints();
-
-        return total;
+    Piece getPieceAt(int rank, int file) {
+        return table.get(rank).get(file);
     }
 
-    double countBlacksPoints() {
-        double total = 0;
-        setPointsForAllPieces();
-        updatePieceColections();
 
-        for (Piece piece : blackPieces)
-            total += piece.getPoints();
-
-        return total;
-    }
     /*
      Privates
      */
-
-    private void updatePieceColections() {
-        whitePieces.clear();
-        blackPieces.clear();
-
-        for (int i = 0; i < RANKS_PER_BOARD; i++)
-            for (int j = 0; j < PIECES_PER_RANK; j++) {
-                Piece piece = table.get(i).get(j);
-                if (piece.isWhite())
-                    whitePieces.add(piece);
-                else if (piece.isBlack())
-                    blackPieces.add(piece);
-            }
-        Collections.sort(whitePieces);
-        Collections.sort(blackPieces);
-    }
-
     private void addEmptyRanks() {
         for (int i = 0; i < RANKS_PER_BOARD; i++)
             createEmptyRank();
@@ -152,14 +136,14 @@ class ChessBoard {
     private void createEmptyRank() {
         List<Piece> newRank = new ArrayList<>(PIECES_PER_RANK);
         for (int j = 0; j < PIECES_PER_RANK; j++)
-            newRank.add(Piece.noPiece());
+            newRank.add(new NoPiece());
         table.add(newRank);
     }
 
     private void addWhitePawnsRank() {
         List<Piece> pawnRank = new ArrayList<>(PIECES_PER_RANK);
         for (int i = 0; i < PIECES_PER_RANK; i++) {
-            pawnRank.add(Piece.createWhite(Piece.Type.PAWN));
+            pawnRank.add(new Pawn(Piece.COLOR.WHITE));
             piecesCount++;
         }
         table.set(1, pawnRank);
@@ -168,71 +152,42 @@ class ChessBoard {
     private void addBlackPawnsRank() {
         List<Piece> pawnRank = new ArrayList<>(PIECES_PER_RANK);
         for (int i = 0; i < PIECES_PER_RANK; i++) {
-            pawnRank.add(Piece.createBlack(Piece.Type.PAWN));
+            pawnRank.add(new Pawn(Piece.COLOR.BLACK));
             piecesCount++;
         }
         table.set(RANKS_PER_BOARD - 2, pawnRank);
     }
 
     private void addWhiteFigureRank() {
-        List<Piece> rank = createWhiteFigureRank();
+        List<Piece> rank = createFigureRankOfColor(Piece.COLOR.WHITE);
         piecesCount += PIECES_PER_RANK;
         table.set(0, rank);
     }
 
-    private List<Piece> createWhiteFigureRank() {
+    private List<Piece> createFigureRankOfColor(COLOR color) {
         List<Piece> rank = new ArrayList<>(PIECES_PER_RANK);
-        rank.add(Piece.createWhite(Piece.Type.ROOK));
-        rank.add(Piece.createWhite(Piece.Type.KNIGHT));
-        rank.add(Piece.createWhite(Piece.Type.BISHOP));
-        rank.add(Piece.createWhite(Piece.Type.QUEEN));
-        rank.add(Piece.createWhite(Piece.Type.KING));
-        rank.add(Piece.createWhite(Piece.Type.BISHOP));
-        rank.add(Piece.createWhite(Piece.Type.KNIGHT));
-        rank.add(Piece.createWhite(Piece.Type.ROOK));
+        rank.add(new Rook(color));
+        rank.add(new Knight(color));
+        rank.add(new Bishop(color));
+        rank.add(new Queen(color));
+        rank.add(new King(color));
+        rank.add(new Bishop(color));
+        rank.add(new Knight(color));
+        rank.add(new Rook(color));
         return rank;
     }
 
     private void addBlackFigureRank() {
-        List<Piece> rank = createBlackFigureRank();
+        List<Piece> rank = createFigureRankOfColor(COLOR.BLACK);
         piecesCount += PIECES_PER_RANK;
         table.set(RANKS_PER_BOARD - 1, rank);
     }
 
-    private List<Piece> createBlackFigureRank() {
-        List<Piece> rank = new ArrayList<>(PIECES_PER_RANK);
-        rank.add(Piece.createBlack(Piece.Type.ROOK));
-        rank.add(Piece.createBlack(Piece.Type.KNIGHT));
-        rank.add(Piece.createBlack(Piece.Type.BISHOP));
-        rank.add(Piece.createBlack(Piece.Type.QUEEN));
-        rank.add(Piece.createBlack(Piece.Type.KING));
-        rank.add(Piece.createBlack(Piece.Type.BISHOP));
-        rank.add(Piece.createBlack(Piece.Type.KNIGHT));
-        rank.add(Piece.createBlack(Piece.Type.ROOK));
-        return rank;
-    }
-
-    private int charFileToInt(char value) {
+    static private int charFileToInt(char value) {
         if (value < 'a' || value > 'h')
             throw new InvalidPositionException();
 
         return value - 'a';
-    }
-
-    private int parseRankNumber(String position) {
-        for (char value : position.toCharArray())
-            if (Character.isDigit(value))
-                return Integer.parseInt("" + value) - 1;
-
-        throw new InvalidPositionException();
-    }
-
-    private int parseFileNumber(String position) {
-        for (char value : position.toCharArray())
-            if (Character.isLetter(value))
-                return charFileToInt(value);
-
-        throw new InvalidPositionException();
     }
 
     private boolean isInputBoardWithLabels(String inputBoard) {
@@ -283,51 +238,6 @@ class ChessBoard {
                     rank.substring(0, PIECES_PER_RANK)));
 
         return result.toString();
-    }
-
-    private void setPiecePoints(Piece piece) {
-        switch (piece.getType()) {
-            case QUEEN:
-                piece.setPoints(9);
-                break;
-            case ROOK:
-                piece.setPoints(5);
-                break;
-            case BISHOP:
-                piece.setPoints(3);
-                break;
-            case KNIGHT:
-                piece.setPoints(2.5);
-                break;
-        }
-    }
-
-    private void setPawnPoints(Piece piece, int file) {
-        int pawnCount = 0;
-        boolean isWhite = piece.isWhite();
-
-        for (int i = 0; i < RANKS_PER_BOARD; i++) {
-            Piece p = table.get(i).get(file);
-            if (p.getType() == Piece.Type.PAWN && p.isWhite() == isWhite)
-                pawnCount++;
-        }
-        if (pawnCount > 1)
-            piece.setPoints(0.5);
-        else
-            piece.setPoints(1);
-    }
-
-    private void setPointsForAllPieces() {
-        for (int i = 0; i < RANKS_PER_BOARD; i++)
-            for (int j = 0; j < PIECES_PER_RANK; j++) {
-                Piece piece = table.get(i).get(j);
-                if (piece.getType() != Piece.Type.NO_PIECE) {
-                    if (piece.getType() == Piece.Type.PAWN)
-                        setPawnPoints(piece, j);
-                    else
-                        setPiecePoints(piece);
-                }
-            }
     }
 
     private static class InvalidPositionException extends RuntimeException {

@@ -14,11 +14,11 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
-public class StudentIT {
+public class StudentTest {
 
     private static final double GRADE_TOLERANCE = 0.05;
 
-    public StudentIT() {
+    public StudentTest() {
     }
 
     @Before
@@ -47,15 +47,15 @@ public class StudentIT {
         assertEquals(0, student.getCredits());
         assertFalse(student.isFullTime());
 
-        student.addCredit(3);
+        student.addCredits(3);
         assertEquals(3, student.getCredits());
         assertFalse(student.isFullTime());
 
-        student.addCredit(4);
+        student.addCredits(4);
         assertEquals(7, student.getCredits());
         assertFalse(student.isFullTime());
 
-        student.addCredit(5);
+        student.addCredits(5);
         assertEquals(Student.CREDITS_REQUIRED_FOR_FULL_TIME, student.getCredits());
         assertTrue(student.isFullTime());
     }
@@ -87,7 +87,7 @@ public class StudentIT {
         student.addGrade(Student.Grade.D);
         assertGpa(student, 2.5);
 
-        student.addGrade(Student.Grade.E);
+        student.addGrade(Student.Grade.F);
         assertGpa(student, 2);
     }
 

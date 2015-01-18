@@ -10,14 +10,24 @@ public class Student {
 
     public static enum Grade {
 
-        A, B, C, D, E, F
+        A(4), B(3), C(2), D(1), F(0);
+
+        private final int points;
+
+        Grade(int points) {
+            this.points = points;
+        }
+
+        int getPoints() {
+            return points;
+        }
     };
 
     private final String name;
     private int credits;
     private String state = "";
     private final List<Grade> grades = new ArrayList<>();
-    private GradingStrategy gradingStrategy = new RegularGradingStrategy();
+    private GradingStrategy gradingStrategy = new BasicGradingStrategy();
 
     public Student(String name) {
         this.name = name;
@@ -36,7 +46,7 @@ public class Student {
         return credits;
     }
 
-    void addCredit(int addedCredits) {
+    void addCredits(int addedCredits) {
         this.credits += addedCredits;
     }
 
@@ -49,8 +59,9 @@ public class Student {
     }
 
     double getGpa() {
-        if (grades.isEmpty())
+        if (grades.isEmpty()) {
             return 0.0;
+        }
         double total = 0.0;
         for (Grade grade : grades) {
             total += gradingStrategy.getGradePointsFor(grade);

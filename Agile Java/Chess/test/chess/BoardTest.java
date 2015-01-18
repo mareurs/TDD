@@ -3,24 +3,21 @@ package chess;
 import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
-import pieces.Piece;
-import static pieces.Piece.Type.*;
+import pieces.*;
 import static util.StringUtil.NEWLINE;
 import static util.StringUtil.appendNewLine;
 
-public class ChessBoardTest {
+public class BoardTest {
 
-    static private final double DELTA = 0.001;
+    private Board board;
 
-    private ChessBoard board;
-
-    public ChessBoardTest() {
+    public BoardTest() {
 
     }
 
     @Before
     public void setUp() {
-        board = new ChessBoard();
+        board = new Board();
     }
 
     @Test
@@ -40,23 +37,23 @@ public class ChessBoardTest {
     @Test
     public void testInitializeBoardFromString() {
         String inputBoard = createRandomBoardWithLabels();
-        board = new ChessBoard(inputBoard);
-        assertEquals('r', board.getPieceAt("e1"));
+        board = new Board(inputBoard);
+        assertEquals('r', board.getPieceAt("e1").getRepresentation());
 
         inputBoard = reverseStringBoard(inputBoard);
-        board = new ChessBoard(inputBoard);
-        assertEquals('n', board.getPieceAt("f4"));
+        board = new Board(inputBoard);
+        assertEquals('n', board.getPieceAt("f4").getRepresentation());
 
         inputBoard = createRandomBoard();
-        board = new ChessBoard(inputBoard);
-        assertEquals('p', board.getPieceAt("g2"));
+        board = new Board(inputBoard);
+        assertEquals('p', board.getPieceAt("g2").getRepresentation());
     }
 
     @Test
     public void testCountPieces() {
         String inputBoard = createRandomBoardWithLabels();
 
-        board = new ChessBoard(inputBoard);
+        board = new Board(inputBoard);
         assertEquals(3, board.countPieces('P'));
         assertEquals(4, board.countPieces('p'));
         assertEquals(1, board.countPieces('k'));
@@ -65,55 +62,32 @@ public class ChessBoardTest {
     @Test
     public void testGetPieceByPosition() {
         board.initialize();
-        assertEquals('R', board.getPieceAt("a8"));
-        assertEquals('k', board.getPieceAt("e1"));
+        assertEquals('R', board.getPieceAt("a8").getRepresentation());
+        assertEquals('k', board.getPieceAt("e1").getRepresentation());
     }
 
     @Test
     public void testPlacePiecesOnEmptyBoard() {
-        board = new ChessBoard();
+        board = new Board();
         assertEquals(0, board.piecesCount());
 
-        Piece pawn = Piece.createWhite(PAWN);
+        Piece pawn = new Pawn(Piece.COLOR.WHITE);
         String position = "a2";
-        board.add(pawn, position);
-        assertEquals(pawn.getRepresentation(), board.getPieceAt(position));
+        board.put(pawn, position);
+        assertEquals(pawn.getRepresentation(), board.getPieceAt(position).getRepresentation());
 
         position = "a3";
-        Piece king = Piece.createBlack(Piece.Type.KING);
-        board.add(king, position);
-        assertEquals(king.getRepresentation(), board.getPieceAt(position));
+        Piece king = new King(Piece.COLOR.WHITE);
+        board.put(king, position);
+        assertEquals(king.getRepresentation(), board.getPieceAt(position).getRepresentation());
 
     }
 
-    @Test
-    public void testCountPoints() {
-
-        board = new ChessBoard();
-        board.add(Piece.createWhite(PAWN), "f2");
-        assertPoints(1, board.countWhitesPoints());
-
-        board.add(Piece.createWhite(PAWN), "f3");
-        assertPoints(1, board.countWhitesPoints());
-
-        board.add(Piece.createWhite(KNIGHT), "f1");
-        assertPoints(3.5, board.countWhitesPoints());
-
-        board.add(Piece.createBlack(QUEEN), "e6");
-        assertPoints(9, board.countBlacksPoints());
-
-        board = new ChessBoard(createRandomBoardWithLabels());
-        System.out.println(board.print());
-
-        assertPoints(20, board.countBlacksPoints());
-        assertPoints(19.5, board.countWhitesPoints());
-
-    }
 
     /*
      Privates
      */
-    private String createRandomBoardWithLabels() {
+    static String createRandomBoardWithLabels() {
         return appendNewLine(".KR.....8")
                 + appendNewLine("P.PB....7")
                 + appendNewLine(".P..Q...6")
@@ -143,10 +117,6 @@ public class ChessBoardTest {
                 + appendNewLine(".....p.p")
                 + appendNewLine(".....pp.")
                 + appendNewLine("....rk..");
-    }
-
-    private void assertPoints(final double expected, final double actual) {
-        assertEquals(expected, actual, DELTA);
     }
 
 }

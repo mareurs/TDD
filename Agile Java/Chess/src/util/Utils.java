@@ -1,15 +1,13 @@
 package util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class Utils {
 
     private Utils() {
     }
 
-    public static List<Object> list(Object... items) {
+    public static <T> List<T> list(T... items) {
         return new ArrayList<>(Arrays.asList(items));
     }
 

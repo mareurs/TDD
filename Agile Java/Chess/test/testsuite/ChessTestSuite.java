@@ -1,16 +1,20 @@
 package testsuite;
 
-import chess.ChessBoardTest;
+import chess.BoardTest;
 import gui.CharacterIT;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import pieces.PieceIT;
+import pieces.*;
 import util.StringUtilTest;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-    ChessBoardTest.class,
-    PieceIT.class,
+    BoardTest.class,
+    KingTest.class,
+    QueenTest.class,
+    PawnTest.class,
+    BishopTest.class,
+    KnightTest.class,
     CharacterIT.class,
     StringUtilTest.class
 })

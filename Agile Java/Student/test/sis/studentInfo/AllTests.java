@@ -2,14 +2,18 @@ package sis.studentInfo;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import sis.report.RosterReporterIT;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses(
         {
-            sis.studentInfo.StudentIT.class,
-            sis.studentInfo.CourseSessionIT.class,
-            sis.report.RosterReporterIT.class,
-            sis.studentInfo.DateUtilIT.class,})
+            StudentTest.class,
+            CourseSessionTest.class,
+            RosterReporterIT.class,
+            DateUtilTest.class,
+            BasicGradingStrategyTest.class,
+            HonorsGradingStrategyTest.class
+        })
 public class AllTests {
 
 }

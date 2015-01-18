@@ -2,7 +2,10 @@ package gui;
 
 import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+import pieces.Pawn;
 import pieces.Piece;
+import static pieces.Piece.COLOR.BLACK;
+import static pieces.Piece.COLOR.WHITE;
 
 public class CharacterIT {
 
@@ -21,8 +24,8 @@ public class CharacterIT {
 
     @Test
     public void testSetCharacter() {
-        Piece blackPawn = Piece.createBlack(Piece.Type.PAWN);
-        Piece whitePawn = Piece.createWhite(Piece.Type.PAWN);
+        Piece blackPawn = new Pawn(BLACK);
+        Piece whitePawn = new Pawn(WHITE);
 
         assertEquals('P', blackPawn.getRepresentation());
         assertEquals('p', whitePawn.getRepresentation());

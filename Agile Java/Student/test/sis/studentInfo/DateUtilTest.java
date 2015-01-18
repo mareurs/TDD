@@ -1,15 +1,12 @@
 package sis.studentInfo;
 
-import sis.studentInfo.DateUtil;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import org.junit.Test;
+import java.util.*;
 import static org.junit.Assert.*;
+import org.junit.Test;
 
-public class DateUtilIT {
+public class DateUtilTest {
 
-    public DateUtilIT() {
+    public DateUtilTest() {
     }
 
     @Test
